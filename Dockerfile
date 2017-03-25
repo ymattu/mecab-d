@@ -37,9 +37,8 @@ RUN wget -O mecab-ipadic-2.7.0-20070801.tar.gz "https://drive.google.com/uc?expo
 
 # Neologd
 RUN git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
-RUN cd mecab-ipadic-neologd
-RUN ./bin/install-mecab-ipadic-neologd -n
-RUN ./bin/install-mecab-ipadic-neologd --create_user_dic
+RUN mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n -y
+RUN mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd --create_user_dic
 
 # Clean up
 RUN apt remove -y build-essential ;\
