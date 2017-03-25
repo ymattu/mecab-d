@@ -25,15 +25,15 @@ RUN apt-get install -y --no-install-recommends imagemagick \
     && updmap-sys
 
 # Mecab
-RUN curl -O https://mecab.googlecode.com/files/mecab-0.996.tar.gz
-RUN tar -xzf mecab-0.996.tar.gz
-RUN cd mecab-0.996; ./configure --enable-utf8-only; make; make install; ldconfig
+RUN wget -O mecab-0.996.tar.gz "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE" ;\
+    tar -xzf mecab-0.996.tar.gz ;\
+    cd mecab-0.996; ./configure --enable-utf8-only; make; make install; ldconfig
 
 # Ipadic
-RUN curl -O https://mecab.googlecode.com/files/mecab-ipadic-2.7.0-20070801.tar.gz
-RUN tar -xzf mecab-ipadic-2.7.0-20070801.tar.gz
-RUN cd mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install
-RUN echo "dicdir = /usr/local/lib/mecab/dic/ipadic" > /usr/local/etc/mecabrc
+RUN wget -O mecab-ipadic-2.7.0-20070801.tar.gz "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM" ;\
+    tar -xzf mecab-ipadic-2.7.0-20070801.tar.gz ;\
+    cd mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install ;\
+    echo "dicdir = /usr/local/lib/mecab/dic/ipadic" > /usr/local/etc/mecabrc
 
 # Neologd
 RUN git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
@@ -42,9 +42,10 @@ RUN ./bin/install-mecab-ipadic-neologd -n
 RUN ./bin/install-mecab-ipadic-neologd --create_user_dic
 
 # Clean up
-RUN apt-get remove -y build-essential
-RUN rm -rf mecab-0.996.tar.gz*
-RUN rm -rf mecab-ipadic-2.7.0-20070801*
+RUN apt remove -y build-essential ;\
+    rm -rf rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* ;\
+    rm -rf mecab-0.996.tar.gz* ;\
+    rm -rf mecab-ipadic-2.7.0-20070801*
 
 # Change environment to Japanese(Character and DateTime)
 ENV LANG ja_JP.UTF-8
