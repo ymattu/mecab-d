@@ -1,10 +1,10 @@
 FROM rocker/rstudio:latest
 MAINTAINER "ymattu"
 
-RUN apt-get update 
+RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
     ibus-mozc \
-    manpages-ja 
+    manpages-ja
 RUN apt-get install -y --no-install-recommends imagemagick \
     lmodern \
     texlive \
@@ -24,7 +24,7 @@ RUN apt-get install -y --no-install-recommends imagemagick \
     && mktexlsr \
     && updmap-sys
 
-## Install some external dependencies. 
+## Install some external dependencies.
 RUN apt-get update \
   && apt-get install -y --no-install-recommends -t unstable \
     default-jdk \
@@ -40,6 +40,7 @@ RUN apt-get update \
     librdf0-dev \
     libssl-dev \
     libmysqlclient-dev \
+    libpq-dev \
     libsqlite3-dev \
     libv8-dev \
     libxcb1-dev \
@@ -56,18 +57,80 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/ \
   && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
-# For tidyverse packages
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-  libsqlite-dev \
-  libmariadbd-dev \
-  libmariadb-client-lgpl-dev \
-  libpq-dev \
-  && . /etc/environment \
-  && install2.r --error \
-    --repos 'http://www.bioconductor.org/packages/release/bioc' \
-    --repos $MRAN \ 
-    --deps TRUE \
-    tidyverse devtools dplyr ggplot2 profvis formatR remotes
+## Install the Hadleyverse packages (and some close friends).
+RUN install2.r --error \
+    broom \
+    DiagrammeR \
+    devtools \
+    dplyr \
+    ggplot2 \
+    ggthemes \
+    haven \
+    httr \
+    knitr \
+    lubridate \
+    packrat \
+    pryr \
+    purrr \
+    reshape2 \
+    rmarkdown \
+    rmdformats \
+    rticles \
+    rvest \
+    readr \
+    readxl \
+    testthat \
+    tibble \
+    tidyr \
+    tufte \
+    shiny \
+    stringr \
+    xml2
+
+## Manually install (useful packages from) the SUGGESTS list of the above packages.
+## (because --deps TRUE can fail when packages are added/removed from CRAN)
+RUN install2.r --error \
+    -r "https://cran.rstudio.com" \
+    -r "http://www.bioconductor.org/packages/release/bioc" \
+    base64enc \
+    BiocInstaller \
+    codetools \
+    covr \
+    data.table \
+    downloader \
+    gridExtra \
+    gtable \
+    hexbin \
+    Hmisc \
+    htmlwidgets \
+    jpeg \
+    Lahman \
+    lattice \
+    lintr \
+    MASS \
+    PKI \
+    png \
+    microbenchmark \
+    mgcv \
+    mapproj \
+    maps \
+    maptools \
+    mgcv \
+    nlme \
+    nycflights13 \
+    quantreg \
+    Rcpp \
+    rJava \
+    roxygen2 \
+    RMySQL \
+    RPostgreSQL \
+    RSQLite \
+    testit \
+    V8 \
+    XML \
+  && r -e 'source("https://raw.githubusercontent.com/MangoTheCat/remotes/master/install-github.R")$value("mangothecat/remotes")' \
+  && r -e 'remotes::install_github("wesm/feather/R")' \
+  && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 # Mecab
 RUN curl -O https://mecab.googlecode.com/files/mecab-0.996.tar.gz
@@ -101,7 +164,7 @@ RUN sed -i '$d' /etc/locale.gen \
 RUN /bin/bash -c "source /etc/default/locale"
 RUN ln -sf  /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
-# Install R packages
+# Install  additional R packages
 RUN Rscript -e "install.packages(c('githubinstall','rstan','ggmcmc','rstanarm','ellipse','hexbin','ggtern','mvtnorm','bda','Nippon','ggrepel','tm','slam'))"
 RUN Rscript -e "install.packages('RMeCab',repos='http://rmecab.jp/R')"
 
