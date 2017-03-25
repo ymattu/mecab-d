@@ -25,9 +25,7 @@ RUN apt-get install -y --no-install-recommends imagemagick \
     && updmap-sys
 
 # Mecab
-ENV MECAB_VERSION 0.996
-ENV mecab_url https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE
-RUN curl -SL -o mecab-${MECAB_VERSION}.tar.gz ${mecab_url}
+RUN curl -O https://mecab.googlecode.com/files/mecab-0.996.tar.gz
 RUN tar -xzf mecab-0.996.tar.gz
 RUN cd mecab-0.996; ./configure --enable-utf8-only; make; make install; ldconfig
 
