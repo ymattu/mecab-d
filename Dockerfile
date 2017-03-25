@@ -35,11 +35,6 @@ RUN wget -O mecab-ipadic-2.7.0-20070801.tar.gz "https://drive.google.com/uc?expo
     cd mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install ;\
     echo "dicdir = /usr/local/lib/mecab/dic/ipadic" > /usr/local/etc/mecabrc
 
-# Neologd
-RUN git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
-RUN mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n -y
-RUN mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd --create_user_dic
-
 # Clean up
 RUN apt remove -y build-essential ;\
     rm -rf rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* ;\
