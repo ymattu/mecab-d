@@ -65,28 +65,14 @@ RUN apt-get install -y --no-install-recommends imagemagick \
 RUN apt-get update \
   && apt-get install -y --no-install-recommends -t unstable \
     default-jdk \
-    default-jre \
-    gdal-bin \
-    icedtea-netx \
-    libatlas-base-dev \
-    libcairo2-dev \
-    libgsl0-dev \
     libgdal-dev \
+    libproj-dev \
     libgeos-dev \
-    libgeos-c1v5 \
-    librdf0-dev \
-    libssl-dev \
-    libmysqlclient-dev \
-    libpq-dev \
-    libsqlite3-dev \
     libv8-dev \
-    libxcb1-dev \
-    libxdmcp-dev \
-    libxml2-dev \
-    libxslt1-dev \
-    libxt-dev \
-    netcdf-bin \
-    r-cran-rgl \
+    libgsl0-dev \
+    liblzma-dev \
+    libbz2-dev \
+    libiuc-dev \
   && R CMD javareconf \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/ \
