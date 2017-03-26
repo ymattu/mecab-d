@@ -23,6 +23,16 @@ RUN apt-get update \
     ## just because
     less \
     vim \
+    ## Install some external dependencies.
+    default-jdk \
+    libgdal-dev \
+    libproj-dev \
+    libgeos-dev \
+    libv8-dev \
+    libgsl0-dev \
+    liblzma-dev \
+    libbz2-dev \
+    libiuc-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/ \
   ## R manuals use inconsolata font, but texlive-fonts-extra is huge, so:
@@ -60,23 +70,6 @@ RUN apt-get install -y --no-install-recommends imagemagick \
     && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
     && mktexlsr \
     && updmap-sys
-
-## Install some external dependencies. 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends -t unstable \
-    default-jdk \
-    libgdal-dev \
-    libproj-dev \
-    libgeos-dev \
-    libv8-dev \
-    libgsl0-dev \
-    liblzma-dev \
-    libbz2-dev \
-    libiuc-dev \
-  && R CMD javareconf \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/ \
-  && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 ## Mecab
 RUN wget -O mecab-0.996.tar.gz "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE" ;\
