@@ -23,16 +23,6 @@ RUN apt-get update \
     ## just because
     less \
     vim \
-    ## Install some external dependencies.
-    default-jdk \
-    libgdal-dev \
-    libproj-dev \
-    libgeos-dev \
-    libv8-dev \
-    libgsl0-dev \
-    liblzma-dev \
-    libbz2-dev \
-    libiuc-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/ \
   ## R manuals use inconsolata font, but texlive-fonts-extra is huge, so:
