@@ -15,9 +15,9 @@ RUN apt-get update \
     libmagick++-dev \
     ## system dependency of hunspell (devtools)
     libhunspell-dev \
-    ## R CMD Check wants qpdf to check pdf sizes, or iy throws a Warning 
+    ## R CMD Check wants qpdf to check pdf sizes, or iy throws a Warning
     qpdf \
-    ## for git via ssh key 
+    ## for git via ssh key
     ssh \
     ## for building pdfs via pandoc/LaTeX
     lmodern \
@@ -33,16 +33,17 @@ RUN apt-get update \
     dvipsk-ja \
     gv \
     texlive-fonts-extra \
-    && apt-get clean \
-    && cd /usr/share/texlive/texmf-dist \
-    && wget http://download.forest.impress.co.jp/pub/library/i/ipafont/10483/IPAfont00303.zip \
-    && unzip IPAfont00303.zip \
-    && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
-    && mktexlsr \
-    && updmap-sys \
     ## just because
     less \
     vim \
+  # IPA fonts
+  && apt-get clean \
+  && cd /usr/share/texlive/texmf-dist \
+  && wget http://download.forest.impress.co.jp/pub/library/i/ipafont/10483/IPAfont00303.zip \
+  && unzip IPAfont00303.zip \
+  && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
+  && mktexlsr \
+  && updmap-sys \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/ \
   ## R manuals use inconsolata font, but texlive-fonts-extra is huge, so:
@@ -53,8 +54,8 @@ RUN apt-get update \
   && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
   && mktexlsr \
   && updmap-sys \
-  ## And some nice R packages for publishing-related stuff 
-  && . /etc/environment \ 
+  ## And some nice R packages for publishing-related stuff
+  && . /etc/environment \
   && install2.r --error --repos $MRAN --deps TRUE \
     bookdown rticles rmdshower
 
