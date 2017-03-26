@@ -5,8 +5,26 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
     ibus-mozc \
     manpages-ja
-RUN apt-get install -y --no-install-recommends imagemagick \
+
+## Add LaTeX, rticles and bookdown support
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    ghostscript \
+    imagemagick \
+    ## system dependency of hadley/pkgdown
+    libmagick++-dev \
+    ## system dependency of hunspell (devtools)
+    libhunspell-dev \
+    ## R CMD Check wants qpdf to check pdf sizes, or iy throws a Warning 
+    qpdf \
+    ## for git via ssh key 
+    ssh \
+    ## for building pdfs via pandoc/LaTeX
     lmodern \
+    texlive-fonts-recommended \
+    texlive-humanities \
+    texlive-latex-extra \
+    texinfo \
     texlive \
     texlive-lang-cjk \
     texlive-luatex \
@@ -14,7 +32,6 @@ RUN apt-get install -y --no-install-recommends imagemagick \
     xdvik-ja \
     dvipsk-ja \
     gv \
-    texlive-fonts-recommended \
     texlive-fonts-extra \
     && apt-get clean \
     && cd /usr/share/texlive/texmf-dist \
@@ -22,7 +39,24 @@ RUN apt-get install -y --no-install-recommends imagemagick \
     && unzip IPAfont00303.zip \
     && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
     && mktexlsr \
-    && updmap-sys
+    && updmap-sys \
+    ## just because
+    less \
+    vim \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/ \
+  ## R manuals use inconsolata font, but texlive-fonts-extra is huge, so:
+  && cd /usr/share/texlive/texmf-dist \
+  && wget http://mirrors.ctan.org/install/fonts/inconsolata.tds.zip \
+  && unzip inconsolata.tds.zip \
+  && rm inconsolata.tds.zip \
+  && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
+  && mktexlsr \
+  && updmap-sys \
+  ## And some nice R packages for publishing-related stuff 
+  && . /etc/environment \ 
+  && install2.r --error --repos $MRAN --deps TRUE \
+    bookdown rticles rmdshower
 
 # Mecab
 RUN wget -O mecab-0.996.tar.gz "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE" ;\
@@ -51,7 +85,7 @@ RUN sed -i '$d' /etc/locale.gen \
 RUN /bin/bash -c "source /etc/default/locale"
 RUN ln -sf  /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
-# Install  additional R packages
+# Install additional R packages
 RUN Rscript -e "install.packages(c('githubinstall','rstan','ggmcmc','rstanarm','ellipse','hexbin','ggtern','mvtnorm','bda','Nippon','ggrepel','tm','slam'))"
 RUN Rscript -e "install.packages('RMeCab',repos='http://rmecab.jp/R')"
 
