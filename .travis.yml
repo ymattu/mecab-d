@@ -1,0 +1,13 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t ymattu/mecab-d .
+
+## A few simple / crude tests
+script:
+  - docker run -d --name mattu ymattu/mecab-d
+  - sleep 5 && docker ps | grep mecab-d
+  - docker rm -f $(docker ps -a -q)
