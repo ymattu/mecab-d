@@ -13,7 +13,7 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
     ## Nice Google fonts
     fonts-roboto \
     ## IPAex Fonts
-    fonts-ipaexfont
+    fonts-ipaexfont \
     ## used by some base R plots
     ghostscript \
     ## used to build rJava and other packages
