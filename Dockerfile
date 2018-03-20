@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:3.4.3
+FROM rocker/tidyverse:latest
 MAINTAINER "ymattu"
 
 ## Add LaTeX, rticles and bookdown support
