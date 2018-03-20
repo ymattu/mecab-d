@@ -12,6 +12,8 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
     default-jdk \
     ## Nice Google fonts
     fonts-roboto \
+    ## IPAex Fonts
+    fonts-ipaexfont
     ## used by some base R plots
     ghostscript \
     ## used to build rJava and other packages
@@ -66,15 +68,6 @@ RUN wget -O mecab-ipadic-2.7.0-20070801.tar.gz "https://drive.google.com/uc?expo
     tar -xzf mecab-ipadic-2.7.0-20070801.tar.gz ;\
     cd mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install ;\
     echo "dicdir = /usr/local/lib/mecab/dic/ipadic" > /usr/local/etc/mecabrc
-
-## IPAex Fonts
-RUN apt-get clean ;\
-  cd /opt/TinyTeX/texmf-dist ;\
-  wget https://oscdl.ipa.go.jp/IPAexfont/IPAexfont00301.zip ;\
-  unzip IPAexfont00301.zip ;\
-  echo "Map zi4.map" >> /opt/TinyTeX/texmf-dist/web2c/updmap.cfg ;\
-  mktexlsr ;\
-  updmap-sys
 
 ## Clean up
 RUN apt remove -y build-essential ;\
