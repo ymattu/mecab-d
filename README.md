@@ -7,7 +7,7 @@ This repository is designed for only Japanese.
 
 ## 詳細は
 以下のブログ記事をご覧ください
-http://y-mattu.hatenablog.com/entry/2017/03/28/002200
+http://y-mattu.hatenablog.com/entry/mecabd20180320
 
 ## ライセンス
 この Dockerfile は GPL 2 によりライセンスされています。
