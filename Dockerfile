@@ -1,62 +1,60 @@
-FROM rocker/tidyverse:3.3.3
+FROM rocker/tidyverse:latest
 MAINTAINER "ymattu"
 
-RUN apt-get update \
+## Add LaTeX, rticles and bookdown support
+## uses dummy texlive, see FAQ 8: https://yihui.name/tinytex/faq/
+RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
+  && dpkg -i texlive-local.deb \
+  && rm texlive-local.deb \
+  && apt-get update \
   && apt-get install -y --no-install-recommends \
+    ## for rJava
+    default-jdk \
+    ## Nice Google fonts
+    fonts-roboto \
+    ## used by some base R plots
     ghostscript \
-    imagemagick \
-    ## system dependency of hadley/pkgdown
-    libmagick++-dev \
+    ## used to build rJava and other packages
+    libbz2-dev \
+    libicu-dev \
+    liblzma-dev \
     ## system dependency of hunspell (devtools)
     libhunspell-dev \
-    ## R CMD Check wants qpdf to check pdf sizes, or iy throws a Warning
+    ## system dependency of hadley/pkgdown
+    libmagick++-dev \
+    ## rdf, for redland / linked data
+    librdf0-dev \
+    ## for V8-based javascript wrappers
+    libv8-dev \
+    ## for jq queries
+    libjq-dev \
+    ## R CMD Check wants qpdf to check pdf sizes, or throws a Warning
     qpdf \
+    ## For building PDF manuals
+    texinfo \
     ## for git via ssh key
     ssh \
-    ## for building pdfs via pandoc/LaTeX
-    lmodern \
-    texlive-fonts-recommended \
-    texlive-humanities \
-    texlive-latex-extra \
-    texinfo \
-    ## just because
+   ## just because
     less \
     vim \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/ \
-  ## R manuals use inconsolata font, but texlive-fonts-extra is huge, so:
-  && cd /usr/share/texlive/texmf-dist \
-  && wget http://mirrors.ctan.org/install/fonts/inconsolata.tds.zip \
-  && unzip inconsolata.tds.zip \
-  && rm inconsolata.tds.zip \
-  && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
-  && mktexlsr \
-  && updmap-sys \
+  ## Use tinytex for LaTeX installation
+  && wget -qO- \
+    "https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh" | \
+    sh -s - --admin --no-path \
+  && mv ~/.TinyTeX /opt/TinyTeX \
+  && /opt/TinyTeX/bin/*/tlmgr path add \
+  && tlmgr install metafont mfware inconsolata tex ae parskip listings \
+  && tlmgr path add \
+  && Rscript -e "source('https://install-github.me/yihui/tinytex'); tinytex::r_texmf()" \
+  && chown -R root:staff /opt/TinyTeX \
+  && chmod -R g+w /opt/TinyTeX \
+  && chmod -R g+wx /opt/TinyTeX/bin \
   ## And some nice R packages for publishing-related stuff
-  && . /etc/environment \
-  && install2.r --error --repos $MRAN --deps TRUE \
-    bookdown rticles rmdshower
+  && install2.r --error --deps TRUE \
+    bookdown rticles rmdshower DT
 
-## For Japanse LaTeX environment
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends \
-    ibus-mozc \
-    manpages-ja
-RUN apt-get install -y --no-install-recommends imagemagick \
-    texlive-lang-cjk \
-    texlive-luatex \
-    texlive-xetex \
-    xdvik-ja \
-    dvipsk-ja \
-    gv \
-    texlive-fonts-extra \
-    && apt-get clean \
-    && cd /usr/share/texlive/texmf-dist \
-    && wget http://dl.ipafont.ipa.go.jp/IPAexfont/IPAexfont00301.zip \
-    && unzip IPAexfont00301.zip \
-    && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
-    && mktexlsr \
-    && updmap-sys
 
 ## Mecab
 RUN wget -O mecab-0.996.tar.gz "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE" ;\
@@ -68,6 +66,15 @@ RUN wget -O mecab-ipadic-2.7.0-20070801.tar.gz "https://drive.google.com/uc?expo
     tar -xzf mecab-ipadic-2.7.0-20070801.tar.gz ;\
     cd mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install ;\
     echo "dicdir = /usr/local/lib/mecab/dic/ipadic" > /usr/local/etc/mecabrc
+
+## IPAex Fonts
+RUN apt-get clean ;\
+  cd /opt/TinyTeX/texmf-dist \
+  wget http://dl.ipafont.ipa.go.jp/IPAexfont/IPAexfont00302.zip ;\
+  unzip IPAexfont00302.zip ;\
+  echo "Map zi4.map" >> /opt/TinyTeX/texmf-dist/web2c/updmap.cfg ;\
+  mktexlsr ;\
+  updmap-sys
 
 ## Clean up
 RUN apt remove -y build-essential ;\
@@ -86,7 +93,7 @@ RUN /bin/bash -c "source /etc/default/locale"
 RUN ln -sf  /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
 ## Install additional R packages
-RUN Rscript -e "install.packages(c('githubinstall','tm','slam'))"
+RUN Rscript -e "install.packages(c('githubinstall','tm','slam', 'tidytext'))"
 RUN Rscript -e "install.packages('RMeCab',repos='http://rmecab.jp/R')"
 
 CMD ["/init"]
