@@ -28,11 +28,11 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
     libv8-dev \
     ## for jq queries
     libjq-dev \
-    ## R CMD Check wants qpdf to check pdf sizes, or throws a Warning 
+    ## R CMD Check wants qpdf to check pdf sizes, or throws a Warning
     qpdf \
     ## For building PDF manuals
     texinfo \
-    ## for git via ssh key 
+    ## for git via ssh key
     ssh \
    ## just because
     less \
@@ -69,9 +69,9 @@ RUN wget -O mecab-ipadic-2.7.0-20070801.tar.gz "https://drive.google.com/uc?expo
 
 ## IPAex Fonts
 RUN apt-get clean ;\
-  cd /opt/TinyTeX/texmf-dist \
-  wget http://dl.ipafont.ipa.go.jp/IPAexfont/IPAexfont00301.zip ;\
-  unzip IPAexfont00301.zip \
+  cd /opt/TinyTeX/texmf-dist ;\
+  wget https://oscdl.ipa.go.jp/IPAexfont/IPAexfont00301.zip ;\
+  unzip IPAexfont00301.zip ;\
   echo "Map zi4.map" >> /opt/TinyTeX/texmf-dist/web2c/updmap.cfg ;\
   mktexlsr ;\
   updmap-sys
