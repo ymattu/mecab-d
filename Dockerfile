@@ -51,30 +51,18 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
   && chown -R root:staff /opt/TinyTeX \
   && chmod -R g+w /opt/TinyTeX \
   && chmod -R g+wx /opt/TinyTeX/bin \
+  # IPAex Fonts
+  && apt-get clean \
+  # && cd /usr/share/texlive/texmf-dist \
+  && wget http://dl.ipafont.ipa.go.jp/IPAexfont/IPAexfont00301.zip \
+  && unzip IPAexfont00301.zip \
+  && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
+  && mktexlsr \
+  && updmap-sys
  ## And some nice R packages for publishing-related stuff
   && install2.r --error --deps TRUE \
     bookdown rticles rmdshower DT
 
-## For Japanse LaTeX environment
-# RUN apt-get update
-# RUN apt-get install -y --no-install-recommends \
-#     ibus-mozc \
-#     manpages-ja
-# RUN apt-get install -y --no-install-recommends imagemagick \
-#     texlive-lang-cjk \
-#     texlive-luatex \
-#     texlive-xetex \
-#     xdvik-ja \
-#     dvipsk-ja \
-#     gv \
-#     texlive-fonts-extra \
-#     && apt-get clean \
-#     && cd /usr/share/texlive/texmf-dist \
-#     && wget http://dl.ipafont.ipa.go.jp/IPAexfont/IPAexfont00301.zip \
-#     && unzip IPAexfont00301.zip \
-#     && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
-#     && mktexlsr \
-#     && updmap-sys
 
 ## Mecab
 RUN wget -O mecab-0.996.tar.gz "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE" ;\
