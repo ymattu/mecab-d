@@ -69,7 +69,7 @@ RUN wget -O mecab-ipadic-2.7.0-20070801.tar.gz "https://drive.google.com/uc?expo
 
 ## IPAex Fonts
 RUN apt-get clean ;\
-  cd /opt/TinyTeX/texmf-dist \
+  cd /opt/TinyTeX/texmf-dist ;\
   wget https://oscdl.ipa.go.jp/IPAexfont/IPAexfont00301.zip ;\
   unzip IPAexfont00301.zip ;\
   echo "Map zi4.map" >> /opt/TinyTeX/texmf-dist/web2c/updmap.cfg ;\
