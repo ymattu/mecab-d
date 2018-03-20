@@ -51,15 +51,7 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
   && chown -R root:staff /opt/TinyTeX \
   && chmod -R g+w /opt/TinyTeX \
   && chmod -R g+wx /opt/TinyTeX/bin \
-  # IPAex Fonts
-  && apt-get clean \
-  # && cd /usr/share/texlive/texmf-dist \
-  && wget http://dl.ipafont.ipa.go.jp/IPAexfont/IPAexfont00301.zip \
-  && unzip IPAexfont00301.zip \
-  && echo "Map zi4.map" >> /usr/share/texlive/texmf-dist/web2c/updmap.cfg \
-  && mktexlsr \
-  && updmap-sys
- ## And some nice R packages for publishing-related stuff
+  ## And some nice R packages for publishing-related stuff
   && install2.r --error --deps TRUE \
     bookdown rticles rmdshower DT
 
@@ -74,6 +66,15 @@ RUN wget -O mecab-ipadic-2.7.0-20070801.tar.gz "https://drive.google.com/uc?expo
     tar -xzf mecab-ipadic-2.7.0-20070801.tar.gz ;\
     cd mecab-ipadic-2.7.0-20070801; ./configure --with-charset=utf8; make; make install ;\
     echo "dicdir = /usr/local/lib/mecab/dic/ipadic" > /usr/local/etc/mecabrc
+
+## IPAex Fonts
+RUN apt-get clean ;\
+  cd /opt/TinyTeX/texmf-dist \
+  wget http://dl.ipafont.ipa.go.jp/IPAexfont/IPAexfont00301.zip ;\
+  unzip IPAexfont00301.zip \
+  echo "Map zi4.map" >> /opt/TinyTeX/texmf-dist/web2c/updmap.cfg ;\
+  mktexlsr ;\
+  updmap-sys
 
 ## Clean up
 RUN apt remove -y build-essential ;\
